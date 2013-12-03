@@ -1,0 +1,27 @@
+--- origsrc/openexr-1.7.1/IlmImf/Makefile.am	2013-11-26 20:53:58.965952900 -0600
++++ src/openexr-1.7.1/IlmImf/Makefile.am	2013-11-26 17:12:26.271654300 -0600
+@@ -120,7 +120,10 @@ CLEANFILES = b44ExpLogTable b44ExpLogTab
+ b44ExpLogTable_SOURCES = b44ExpLogTable.cpp
+ b44ExpLogTable_LDADD = @ILMBASE_LDFLAGS@ @ILMBASE_LIBS@
+ 
+-b44ExpLogTable.h: b44ExpLogTable
++b44ExpLogTable$(EXEEXT): $(b44ExpLogTable_SOURCES)
++	c++ -I/usr/include/OpenEXR -o $@ $< -lHalf
++
++b44ExpLogTable.h: b44ExpLogTable$(EXEEXT)
+ 	./b44ExpLogTable > b44ExpLogTable.h
+ 
+ BUILT_SOURCES = b44ExpLogTable.h
+--- origsrc/openexr-1.7.1/configure.ac	2012-07-17 18:27:28.000000000 -0500
++++ src/openexr-1.7.1/configure.ac	2013-11-26 18:32:31.245483000 -0600
+@@ -26,10 +26,6 @@ dnl
+ dnl PKGCONFIG preparations
+ dnl
+ 
+-if test -z "${PKG_CONFIG_PATH}"; then
+-	PKG_CONFIG_PATH=/usr/local/lib64/pkgconfig:/usr/local/lib/pkgconfig:/usr/lib/pkgconfig
+-fi
+-
+ LIB64_IF_EXISTS=""
+ if [[ -e /usr/lib64 ]]; then
+    LIB64_IF_EXISTS="-L/usr/lib64"
